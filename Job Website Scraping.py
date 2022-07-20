@@ -2,6 +2,7 @@
 # note: The requests library allows fetch static HTML using python
 # The beautifulsoup is used to parse the HTML page, to collect relevant information
 import requests
+import pandas as pd
 from bs4 import BeautifulSoup
 
 # Declare your chosen website for scraping
@@ -56,12 +57,18 @@ python_job_elements = [
     h2_element.parent.parent.parent for h2_element in python_jobs
 ]
 print(python_job_elements)
-
+Job_title = []
+Company = []
+Location = []
 # Python Jobs without all the html tags and just the necessary information extracted along with the application link
 for python_job_element in python_job_elements:
     title_element = python_job_element.find("h2", class_="title")
     company_element = python_job_element.find("h3", class_="company")
     location_element = python_job_element.find("p", class_="location")
+    Job_title.append(title_element.text.strip())
+    Company.append(company_element.text.strip())
+    Location.append(location_element.text.strip())
+
     print(title_element.text.strip())
     print(company_element.text.strip())
     print(location_element.text.strip())
@@ -76,3 +83,6 @@ for python_job_element in python_job_elements:
     # for link in links:
     #     link_url = link["href"]
     #     print(f"Apply here: {link_url}\n")
+
+df = pd.DataFrame({'Job Title':Job_title,'Company':Company,'Locations':Location})
+df.to_csv('Jobwebsite.csv', index=False, encoding='utf-8')
